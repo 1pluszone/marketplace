@@ -7,6 +7,8 @@ import 'package:market_place/resources/utils/util.dart';
 import 'package:market_place/views/viewsUtil/custom_colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import 'viewsUtil/view_util.dart';
+
 class ProductDetails extends StatefulWidget {
   final Product product;
   const ProductDetails({super.key, required this.product});
@@ -27,7 +29,6 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomColors.backgroundAsh,
         appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -51,8 +52,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                       const Icon(Icons.share_outlined, color: Colors.black38)),
               IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.shopping_bag_outlined,
-                      color: Colors.black38))
+                  icon: ViewUtil.supersetIcon(
+                      const Icon(Icons.shopping_bag_outlined,
+                          color: Colors.black38),
+                      "1")),
+              const Padding(padding: EdgeInsets.only(right: 10))
             ]),
         bottomSheet: Padding(
           padding:
@@ -129,84 +133,90 @@ class _ProductDetailsState extends State<ProductDetails> {
             ],
           ),
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 20),
-            child: SingleChildScrollView(
-                child: AnimationLimiter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: const Duration(milliseconds: 500),
-                  childAnimationBuilder: (widget) => SlideAnimation(
-                    verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: widget,
-                    ),
-                  ),
-                  children: [
-                    Stack(
-                      children: [
-                        Image.asset(displayImageUrl!),
-                        Positioned(
-                            top: 10,
-                            left: 10,
-                            child: Column(
-                              children: imageview(),
-                            )),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
-                      child: Text(
-                        widget.product.brandName ?? '',
-                        style: Theme.of(context).textTheme.bodyLarge,
+        body: Container(
+          color: const Color.fromARGB(26, 208, 207, 207),
+          // decoration: BoxDecoration(gradient: LinearGradient(colors: [])),
+          child: SafeArea(
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 20),
+              child: SingleChildScrollView(
+                  child: AnimationLimiter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 500),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: widget,
                       ),
                     ),
-                    Text(
-                      widget.product.productName ?? '',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.merge(const TextStyle(fontSize: 20)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Stack(
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.star,
-                                  color: CustomColors.starGold),
-                              Text(
-                                  "${widget.product.rating?.averageRating} Ratings",
-                                  style: Theme.of(context).textTheme.bodySmall),
-                            ],
-                          ),
-                          dotContainer(),
-                          Text(
-                              "${Util.shortenNumber(widget.product.rating?.totalReviews ?? 0)}+ Reviews",
-                              style: Theme.of(context).textTheme.bodySmall),
-                          dotContainer(),
-                          Text(
-                              "${Util.shortenNumber(widget.product.totalSold ?? 0)}+ Sold",
-                              style: Theme.of(context).textTheme.bodySmall)
+                          Image.asset(displayImageUrl!),
+                          Positioned(
+                              top: 10,
+                              left: 10,
+                              child: Column(
+                                children: imageview(),
+                              )),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    aboutItem(),
-                    descriptionSection(),
-                    shippingSection(),
-                    reviewsRatings(),
-                    reivewWithImages(),
-                    const SizedBox(height: 100)
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Text(
+                          widget.product.brandName ?? '',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      Text(
+                        widget.product.productName ?? '',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.merge(const TextStyle(fontSize: 20)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.star,
+                                    color: CustomColors.starGold),
+                                Text(
+                                    "${widget.product.rating?.averageRating} Ratings",
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
+                            dotContainer(),
+                            Text(
+                                "${Util.shortenNumber(widget.product.rating?.totalReviews ?? 0)}+ Reviews",
+                                style: Theme.of(context).textTheme.bodySmall),
+                            dotContainer(),
+                            Text(
+                                "${Util.shortenNumber(widget.product.totalSold ?? 0)}+ Sold",
+                                style: Theme.of(context).textTheme.bodySmall)
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      aboutItem(),
+                      descriptionSection(),
+                      shippingSection(),
+                      reviewsRatings(),
+                      reivewWithImages(),
+                      const SizedBox(height: 100)
+                    ],
+                  ),
                 ),
-              ),
-            )),
+              )),
+            ),
           ),
         ));
   }
@@ -238,7 +248,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  int index = 0;
+  int index = 1;
   Widget aboutItem() {
     return Column(
       children: [
@@ -468,7 +478,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: imageview(),
         )
       ],

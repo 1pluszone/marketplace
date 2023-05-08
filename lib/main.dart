@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:market_place/views/viewsUtil/custom_colors.dart';
 
-import 'dashboard/silver.dart';
+import 'views/dashboard/dashboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: CustomColors.ash),
           )),
-      home: const SliverPersistentAppBar(),
+      home: const Dashboard(),
     );
   }
 }

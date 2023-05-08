@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:market_place/dashboard/product_widget.dart';
+import 'package:market_place/views/dashboard/components/app_bar.dart';
+import 'package:market_place/views/dashboard/product_widget.dart';
 import 'package:market_place/viewModels/dashboard_view_model.dart';
 import 'package:market_place/views/product_details.dart';
 import 'package:market_place/views/viewsUtil/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 
-import 'dashboard.dart';
-
-class SliverPersistentAppBar extends StatefulWidget {
-  const SliverPersistentAppBar({Key? key}) : super(key: key);
+class Dashboard extends StatefulWidget {
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
-  State<SliverPersistentAppBar> createState() => _SliverPersistentAppBarState();
+  State<Dashboard> createState() => _DashboardAppBarState();
 }
 
-class _SliverPersistentAppBarState extends State<SliverPersistentAppBar> {
+class _DashboardAppBarState extends State<Dashboard> {
   int _selectedIndex = 0;
 
   static const List<BottomNavigationBarItem> _widgetOptions =
@@ -71,7 +70,9 @@ class _SliverPersistentAppBarState extends State<SliverPersistentAppBar> {
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate([
+                      const SizedBox(height: 15),
                       categoryWidget(),
+                      const SizedBox(height: 10),
                       productListGrid(),
                     ]),
                   )
@@ -138,10 +139,7 @@ class _SliverPersistentAppBarState extends State<SliverPersistentAppBar> {
 
   Widget individualCategory(Icon icon, String title) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const Dashboard()));
-      }, //TODO: add coming soon snackbar
+      onTap: () {},
       child: Column(children: [
         Container(
           padding: const EdgeInsets.all(8),
@@ -157,156 +155,54 @@ class _SliverPersistentAppBarState extends State<SliverPersistentAppBar> {
   }
 
   Widget productListGrid() {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Text("Best Sale Product",
-                  style: Theme.of(context).textTheme.titleMedium),
-              const Spacer(),
-              TextButton(
-                child: const Text("See more"),
-                onPressed: () {},
-              )
-            ],
+    return Container(
+      color: const Color(0xFFe2e1e1),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Text("Best Sale Product",
+                    style: Theme.of(context).textTheme.titleMedium),
+                const Spacer(),
+                TextButton(
+                  child: const Text("See more"),
+                  onPressed: () {},
+                )
+              ],
+            ),
           ),
-        ),
-        GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: 2,
-          childAspectRatio: 2 / 3,
-          children: List.generate(
-              viewModel.products.length,
-              (index) => Ink(
-                    child: InkWell(
+          GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              //crossAxisCount: 2,
+              //schildAspectRatio: .84,
+              //children:
+              //List.generate(
+              // viewModel.products.length,
+              //(index) =>
+              itemCount: viewModel.products.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 2,
+                  childAspectRatio: .665),
+              itemBuilder: (context, index) => Ink(
+                    child: GestureDetector(
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ProductDetails(
                                     product: viewModel.products[index]))),
-                        child: Ink(
-                            child: ProductWidget(
-                                product: viewModel.products[index]))),
-                  )),
-        ),
-      ],
-      //  ),
-    );
-  }
-}
-
-class MySliverAppBar extends SliverPersistentHeaderDelegate {
-  final double expandedHeight;
-
-  MySliverAppBar({required this.expandedHeight});
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Stack(
-      clipBehavior: Clip.none,
-      fit: StackFit.expand,
-      children: [
-        Opacity(
-          opacity: shrinkOffset == expandedHeight ? 0 : 1,
-          child: PageView(
-            children: [
-              firstView(),
-              secondView(),
-            ],
-          ),
-        ),
-        // Container(
-        //   color: shrinkOffset != expandedHeight
-        //       ? Colors.transparent
-        //       : Colors.white,
-        //child:
-        Opacity(
-          opacity: shrinkOffset / expandedHeight,
-          child: Column(
-            children: [
-              Container(
-                  width: double.infinity,
-                  //height: 100,
-                  color: Colors.white,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 15, top: 50, bottom: 30),
-                    child: searchRow(context),
-                  )),
-            ],
-          ),
-        ),
-        // ),
-        Positioned(
-          top: expandedHeight / 6 - shrinkOffset,
-          left: MediaQuery.of(context).size.width / 20,
-          child: Opacity(
-            opacity: (1 - shrinkOffset / expandedHeight),
-            child: searchRow(context),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget firstView() {
-    return Stack(
-      children: [
-        Image.asset("assets/images/background003.png",
-            width: double.infinity, fit: BoxFit.fill),
-      ],
-    );
-  }
-
-  Widget secondView() {
-    return Stack(
-      children: [
-        Image.asset("assets/images/background004.png",
-            width: double.infinity, fit: BoxFit.fill),
-      ],
-    );
-  }
-
-  final _controller = TextEditingController();
-  Widget searchRow(BuildContext context) {
-    return SizedBox(
-      //height: 40,
-      width: (MediaQuery.of(context).size.width) -
-          MediaQuery.of(context).size.width / 10,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 8,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 40),
-              child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.search),
-                    hintText: "Search.."),
+                        child: ProductWidget(
+                            index: index, product: viewModel.products[index])),
+                  )
+              //),
               ),
-            ),
-          ),
-          const Expanded(flex: 1, child: Icon(Icons.shopping_bag)),
-          const Expanded(flex: 1, child: Icon(Icons.message))
         ],
+        //  ),
       ),
     );
   }
-
-  @override
-  double get maxExtent => expandedHeight;
-
-  @override
-  double get minExtent => kToolbarHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }

@@ -34,6 +34,7 @@ class AnimatedCircle extends CustomPainter {
       required int wave,
       required double value,
       int? length}) {
+    // ignore: no_leading_underscores_for_local_identifiers
     Color _color;
     double r;
 
